@@ -27,18 +27,18 @@ ETA = np.zeros(res) # angle made by the gravity vector at any point on the surfa
 POT = np.zeros(res) # potential at any point on the surface of the core
 
 
-def my_R(z, R, Z): # z = vertical lower limit of current disc
-    a = (HE - abs(z)) * np.tan(zet)
-    smh = Z - z
-    delta = np.sqrt((a + R)**2 + (smh)**2)
+def my_R(z, R, Z): # z = vertical lower limit of current disc, R, Z -> radial and vertical location of current point of evaluation
+    a = (HE - abs(z)) * np.tan(zet) # radius of disc being integrated
+    smh = Z - z # vertical disctance of disc from point of evaluation
+    delta = np.sqrt((a + R)**2 + (smh)**2) # parameter for elliptic integrals
     k = 2 * np.sqrt(a * R) / delta
     ks = scipy.special.ellipk(k**2)
     es = scipy.special.ellipe(k**2)
     return (2 * delta * ((1 - k**2 / 2) * ks - es) / R)
 
 
-def my_Z(z, R, Z):
-    a = (HE - abs(z)) * np.tan(zet)
+def my_Z(z, R, Z): # z = vertical lower limit of current disc, R, Z -> radial and vertical location of current point of evaluation
+    a = (HE - abs(z)) * np.tan(zet) # radius of disc being integrated
     if (R < a):
         epsilon = 1
     elif (R > a):
@@ -108,6 +108,7 @@ VESC = np.zeros(res) # escape velocity
 
 
 # print(gauss(my_f,2,-1,1))
+# Gravity field calculations
 for l in range(0, res):
     POT[l] = deep(res, Tau[l], coordZ[l], 3) # potential
     MR[l] = abs(deep(res, Tau[l], coordZ[l], 1)) # radial magnitude of gravity
@@ -115,17 +116,17 @@ for l in range(0, res):
     MAG[l] = np.sqrt(MR[l]**2 + MZ[l]**2) # total magnitude
     ETA[l] = np.arctan(MR[l]/MZ[l]) # angle of gravity vector wrt horizontal
 
-MAG = MAG / MAG[-1]
+MAG = MAG / MAG[-1] # normalizing the gravity field
 
 #%%
-
+# Effective gravity field with rotation included
 for l in range(0, res):
     AR[l] = abs(MR[l] - om * om * Tau[l])
-    MTAN[l] = MAG[l] * np.cos(zet + ETA[l])
-    MNOR[l] = MAG[l] * np.sin(zet + ETA[l]) # always positive
-    VESC[l] = np.sqrt(2*POT[l])
-    ETAN[l] = MTAN[l] + om * om * Tau[l] * np.sin(zet)
-    ENOR[l] = - MNOR[l] + om * om * Tau[l] * np.cos(zet)
+    MTAN[l] = MAG[l] * np.cos(zet + ETA[l]) # tangential component of gravity
+    MNOR[l] = MAG[l] * np.sin(zet + ETA[l]) # normal component of gravity, always positive
+    VESC[l] = np.sqrt(2*POT[l]) # escape velocity
+    ETAN[l] = MTAN[l] + om * om * Tau[l] * np.sin(zet) # tangential component of effective gravity
+    ENOR[l] = - MNOR[l] + om * om * Tau[l] * np.cos(zet) # normal component of effective gravity
 
 com_ZET = np.pi/2-zet # complement of the semi apex angle
 
