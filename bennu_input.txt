@@ -1,0 +1,42 @@
+# =================================================================
+# Bennu Shallow Granular Flow Solver  —  Runtime Input Parameters
+# =================================================================
+# Format:  key = value    (lines starting with # are ignored)
+#
+# Grid resolution (RES = 200) is a compile-time constant in config.h.
+# Change it there and recompile when a different grid size is needed.
+# All parameters below can be changed without recompilation.
+# =================================================================
+
+# --- Numerical scheme -------------------------------------------------
+output_interval     = 50       # write output every N time steps
+t_final             = 10.0     # simulation time per avalanche event (non-dim)
+limiter_theta       = 1.0      # minmod parameter: 1 = most diffusive, 2 = least
+
+# --- Geometry ---------------------------------------------------------
+apex_half_angle_deg = 45.0     # cone half-apex angle xi (degrees)
+domain_length       = 0.99     # normalised downslope domain extent
+fillet_length       = 0.005    # cone-junction fillet radius (non-dim); controls
+                               # equatorial mass-shedding curvature term
+
+# --- Physical parameters ----------------------------------------------
+friction_angle_deg  = 20.0     # Coulomb friction angle delta (degrees)
+omega_init          = 1.5      # initial non-dimensional spin rate
+aspect_ratio        = 0.005    # flow aspect ratio / shallowness epsilon
+regolith_depth      = 1.0      # initial uniform layer thickness (non-dim)
+density_ratio       = 1.6      # core-to-regolith density ratio (rho_bar = 1.2/0.75)
+gravity_scale       = 1.0      # multiplicative scale applied to the gravity field
+
+# --- Cone geometry for moment of inertia ------------------------------
+cone_slant_height   = 1.25532  # initial slant height (= 470/376, non-dim)
+
+# --- Avalanche cascade ------------------------------------------------
+n_avalanches        = 25       # number of successive landslide events
+
+# --- Gravity field files (produced by gravity_field.ipynb) ------------
+grav_file           = grav45.txt
+eta_file            = eta45.txt
+
+# --- Output file prefix -----------------------------------------------
+# Output files are named:  <prefix>_h.txt, <prefix>_u.txt, etc.
+output_prefix       = run1
